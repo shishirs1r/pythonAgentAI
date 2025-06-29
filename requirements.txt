@@ -1,0 +1,8 @@
+langchain 
+wikipedia 
+langchain-community 
+python-dotenv
+pydantic
+duckduckgo-search
+langchain-huggingface
+huggingface_hub
