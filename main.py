@@ -35,23 +35,19 @@ chat_guide = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """
-            You're a helpful assistant that answers questions! You can:
-            - Use tools like Wikipedia and web search
-            - Use your own knowledge when appropriate
-            - Always list tools used in 'tools_used'
-            - List sources in 'sources' if available
-            - Keep answers clear and friendly!
-            - IMPORTANT: Your response MUST be in valid JSON format
-            - IMPORTANT: Complete all required fields
-            
-            {format_instructions}
-            """
+            "You're a helpful assistant that answers questions! You can:\n"
+            "- Use tools like Wikipedia and web search\n"
+            "- Use your own knowledge when appropriate\n"
+            "- Always list tools used in 'tools_used'\n"
+            "- List sources in 'sources' if available\n"
+            "- Keep answers clear and friendly!\n"
+            "- IMPORTANT: Your response MUST be in valid JSON format\n"
+            "- IMPORTANT: Complete all required fields\n\n"
+            "{format_instructions}"
         ),
-        ("human", """
-        Question: {query}
-        Tool Results: {tool_results}
-        """)
+        ("human", 
+         "Question: {query}\n"
+         "Tool Results: {tool_results}")
     ]
 ).partial(format_instructions=answer_formatter.get_format_instructions())
 
@@ -62,12 +58,12 @@ def gather_information(question):
         wiki_info = wiki_tool.run(question)
         collected_info += f"Wikipedia says: {wiki_info}\n"
     except Exception as error:
-        collected_info += f"Wikipedia didn't work: {str(error)}\n"
+        collected_info += f"Wikipedia error: {error}\n"
     try:
         search_info = search_tool.run(question)
         collected_info += f"Web search says: {search_info}\n"
     except Exception as error:
-        collected_info += f"Web search didn't work: {str(error)}\n"
+        collected_info += f"Search error: {error}\n"
     return collected_info
 
 
@@ -80,8 +76,11 @@ def safe_parse_response(response_content):
             if "topic" not in data:
                 data["topic"] = "Research Results"
             if "summary" not in data:
-                data["summary"] = (response_content[:500] if response_content
-                                   else "Summary not available")
+                data["summary"] = (
+                    response_content[:500] 
+                    if response_content 
+                    else "Summary not available"
+                )
             if "sources" not in data:
                 data["sources"] = []
             if "tools_used" not in data:
