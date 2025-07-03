@@ -45,7 +45,7 @@ chat_guide = ChatPromptTemplate.from_messages(
             "- IMPORTANT: Complete all required fields\n\n"
             "{format_instructions}"
         ),
-        ("human", 
+        ("human",
          "Question: {query}\n"
          "Tool Results: {tool_results}")
     ]
@@ -77,8 +77,8 @@ def safe_parse_response(response_content):
                 data["topic"] = "Research Results"
             if "summary" not in data:
                 data["summary"] = (
-                    response_content[:500] 
-                    if response_content 
+                    response_content[:500]
+                    if response_content
                     else "Summary not available"
                 )
             if "sources" not in data:
