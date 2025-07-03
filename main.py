@@ -42,7 +42,8 @@ chat_guide = ChatPromptTemplate.from_messages(
             - Always list tools used in 'tools_used'
             - List sources in 'sources' if available
             - Keep answers clear and friendly!
-            - IMPORTANT: Your response MUST be in valid JSON format with all fields completed
+            - IMPORTANT: Your response MUST be in valid JSON format
+            - IMPORTANT: Complete all required fields
             
             {format_instructions}
             """
@@ -61,12 +62,12 @@ def gather_information(question):
         wiki_info = wiki_tool.run(question)
         collected_info += f"Wikipedia says: {wiki_info}\n"
     except Exception as error:
-        collected_info += (f"Wikipedia didn't work: {str(error)}\n")
+        collected_info += f"Wikipedia didn't work: {str(error)}\n"
     try:
         search_info = search_tool.run(question)
         collected_info += f"Web search says: {search_info}\n"
     except Exception as error:
-        collected_info += (f"Web search didn't work: {str(error)}\n")
+        collected_info += f"Web search didn't work: {str(error)}\n"
     return collected_info
 
 
@@ -113,7 +114,8 @@ def answer_question(question):
     return final_answer
 
 
-print("Welcome to the Research Assistant! Type 'exit' at any time to quit.")
+print("Welcome to the Research Assistant! "
+      "Type 'exit' at any time to quit.")
 while True:
     user_question = input("\nHi! What would you like to know today? ").strip()
     if user_question.lower() in ["exit", "quit", "bye"]:
@@ -133,9 +135,13 @@ while True:
     if result.tools_used:
         print(f"\nTools used: {', '.join(result.tools_used)}")
     if "save to a file" in user_question.lower():
-        safe_topic = re.sub(r'[^\w\s]', '', result.topic[:30]).strip().replace(' ', '_')
+        safe_topic = re.sub(
+            r'[^\w\s]', '', result.topic[:30]
+        ).strip().replace(' ', '_')
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = (f"research_{timestamp}_"
-                    f"{safe_topic}.txt")
+        filename = (
+            f"research_{timestamp}_"
+            f"{safe_topic}.txt"
+        )
         save_result = save_tool.run(str(result), filename)
-        print(f"\n {save_result}")
+        print(f"\n{save_result}")
