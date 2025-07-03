@@ -61,12 +61,12 @@ def gather_information(question):
         wiki_info = wiki_tool.run(question)
         collected_info += f"Wikipedia says: {wiki_info}\n"
     except Exception as error:
-        collected_info += f"Wikipedia didn't work: {str(error)}\n"
+        collected_info += (f"Wikipedia didn't work: {str(error)}\n")
     try:
         search_info = search_tool.run(question)
         collected_info += f"Web search says: {search_info}\n"
     except Exception as error:
-        collected_info += f"Web search didn't work: {str(error)}\n"
+        collected_info += (f"Web search didn't work: {str(error)}\n")
     return collected_info
 
 
@@ -79,7 +79,7 @@ def safe_parse_response(response_content):
             if "topic" not in data:
                 data["topic"] = "Research Results"
             if "summary" not in data:
-                data["summary"] = (response_content[:500] if response_content 
+                data["summary"] = (response_content[:500] if response_content
                                    else "Summary not available")
             if "sources" not in data:
                 data["sources"] = []
@@ -103,7 +103,10 @@ def answer_question(question):
     )
     messages = [
         SystemMessage(content=system_instructions),
-        HumanMessage(content=f"Question: {question}\nTool Results: {tool_info}")
+        HumanMessage(content=(
+            f"Question: {question}\n"
+            f"Tool Results: {tool_info}"
+        ))
     ]
     response = assistant.invoke(messages)
     final_answer = safe_parse_response(response.content)
@@ -132,6 +135,7 @@ while True:
     if "save to a file" in user_question.lower():
         safe_topic = re.sub(r'[^\w\s]', '', result.topic[:30]).strip().replace(' ', '_')
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"research_{timestamp}_{safe_topic}.txt"
+        filename = (f"research_{timestamp}_"
+                    f"{safe_topic}.txt")
         save_result = save_tool.run(str(result), filename)
         print(f"\n {save_result}")
