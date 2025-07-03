@@ -12,11 +12,13 @@ from tools import search_tool, wiki_tool, save_tool
 
 load_dotenv()
 
+
 class ResearchAnswer(BaseModel):
     topic: str
     summary: str
     sources: list[str] = []
     tools_used: list[str] = []
+
 
 assistant = ChatHuggingFace(
     llm=HuggingFaceEndpoint(
@@ -28,6 +30,7 @@ assistant = ChatHuggingFace(
 )
 
 answer_formatter = PydanticOutputParser(pydantic_object=ResearchAnswer)
+
 chat_guide = ChatPromptTemplate.from_messages(
     [
         (
@@ -51,6 +54,7 @@ chat_guide = ChatPromptTemplate.from_messages(
     ]
 ).partial(format_instructions=answer_formatter.get_format_instructions())
 
+
 def gather_information(question):
     collected_info = ""
     try:
@@ -65,6 +69,7 @@ def gather_information(question):
         collected_info += f"Web search didn't work: {str(error)}\n"
     return collected_info
 
+
 def safe_parse_response(response_content):
     try:
         json_match = re.search(r'\{[\s\S]*\}', response_content)
@@ -74,7 +79,8 @@ def safe_parse_response(response_content):
             if "topic" not in data:
                 data["topic"] = "Research Results"
             if "summary" not in data:
-                data["summary"] = response_content[:500] if response_content else "Summary not available"
+                data["summary"] = (response_content[:500] if response_content 
+                                   else "Summary not available")
             if "sources" not in data:
                 data["sources"] = []
             if "tools_used" not in data:
@@ -89,6 +95,7 @@ def safe_parse_response(response_content):
         tools_used=[]
     )
 
+
 def answer_question(question):
     tool_info = gather_information(question)
     system_instructions = chat_guide.messages[0].prompt.format(
@@ -101,6 +108,7 @@ def answer_question(question):
     response = assistant.invoke(messages)
     final_answer = safe_parse_response(response.content)
     return final_answer
+
 
 print("Welcome to the Research Assistant! Type 'exit' at any time to quit.")
 while True:
