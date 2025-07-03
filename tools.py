@@ -11,7 +11,9 @@ def save_to_txt(data: str, filename: str = None):
         safe_topic = re.sub(r'[^\w\s]', '', data[:20]).strip().replace(' ', '_')
         filename = f"research_{timestamp}_{safe_topic}.txt"
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    formatted_text = f"--- Research Output ---\nTimestamp: {timestamp}\n\n{data}\n\n"
+    formatted_text = (f"--- Research Output ---\n"
+                      f"Timestamp: {timestamp}\n\n"
+                      f"{data}\n\n")
     with open(filename, "w", encoding="utf-8") as f:
         f.write(formatted_text)
     return f"Data successfully saved to {filename}"
@@ -20,7 +22,8 @@ def save_to_txt(data: str, filename: str = None):
 save_tool = Tool(
     name="save_text_to_file",
     func=save_to_txt,
-    description="Saves structured research data to a text file. Creates a new file each time.",
+    description=("Saves structured research data to a text file. "
+                 "Creates a new file each time."),
 )
 
 search = DuckDuckGoSearchRun()
