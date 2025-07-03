@@ -6,7 +6,7 @@ import re
 
 
 def save_to_txt(data: str, filename: str = None):
-    if filename is None:
+    if not filename:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         safe_topic = re.sub(
             r'[^\w\s]', '', data[:20]
@@ -17,13 +17,13 @@ def save_to_txt(data: str, filename: str = None):
         )
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     formatted_text = (
-        f"--- Research Output ---\n"
+        "--- Research Output ---\n"
         f"Timestamp: {timestamp}\n\n"
         f"{data}\n\n"
     )
     with open(filename, "w", encoding="utf-8") as f:
         f.write(formatted_text)
-    return f"Data successfully saved to {filename}"
+    return f"Data saved to {filename}"
 
 
 save_tool = Tool(
