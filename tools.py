@@ -9,7 +9,8 @@ def save_to_txt(data: str, filename: str = None):
     if filename is None:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         safe_topic = re.sub(r'[^\w\s]', '', data[:20]).strip().replace(' ', '_')
-        filename = f"research_{timestamp}_{safe_topic}.txt"
+        filename = (f"research_{timestamp}_"
+                    f"{safe_topic}.txt")
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     formatted_text = (f"--- Research Output ---\n"
                       f"Timestamp: {timestamp}\n\n"
